@@ -1,0 +1,4 @@
+#Tue Jun 20 11:17:20 MMT 2023
+base.0=D\:\\BIB Training Center Backend\\flutterProject\\Tutorial04\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
