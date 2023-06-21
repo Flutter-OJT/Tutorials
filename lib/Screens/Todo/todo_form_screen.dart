@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:todocrudlist/Screens/home_screens.dart';
+import '../../Models/Todo/todo_model.dart';
 
 class MyForm {
-  List<Map<String, String>> itemList = []; // List to store the form values
-  String title = '';
-  String description = '';
+  final Function(Items) onSave;
+  MyForm({required this.onSave});
+  final List<Items> itemList = [];
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
   void addDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -17,83 +22,80 @@ class MyForm {
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Create Todo',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Create Todo',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: TextField(
-                      onChanged: (value) {
-                        // Update the title value
-                        title = value;
-                      },
-                      decoration: const InputDecoration(
-                        //borderRadius: BorderRadius.circular(8),
-
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _titleController,
+                      decoration: InputDecoration(
                         hintText: 'Title',
-                        border: InputBorder.none,
-
-                        contentPadding: EdgeInsets.all(12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: TextField(
-                      onChanged: (value) {
-                        // Update the description value
-                        description = value;
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a title';
+                        }
+                        return null;
                       },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _descriptionController,
                       maxLines: 5,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         alignLabelWithHint: true,
                         hintText: 'Description',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(10),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a description';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        child: ElevatedButton(
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
                           onPressed: () {
-                            // Perform form submission logic here
-                            addItemToList(context, itemList);
-                            Navigator.pop(context);
+                            if (_formKey.currentState!.validate()) {
+                              addItems();
+                              Navigator.pop(context);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(25),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20.0,
+                                horizontal: 20.0), // Adjust the padding values
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                           child: const Text('Create'),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -102,15 +104,12 @@ class MyForm {
     );
   }
 
-  void addItemToList(BuildContext context, List<Map<String, String>> itemList) {
-    itemList.add({'title': title, 'description': description});
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyHome(
-          itemList: itemList,
-        ),
-      ),
-    );
+  void addItems() {
+    var i = 99;
+    String title = _titleController.text;
+    String description = _descriptionController.text;
+    Items items = Items(description: description, title: title, id: i);
+    onSave(items);
+    i++;
   }
 }

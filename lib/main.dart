@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Screens/Todo/todo_form_screen.dart';
+import 'package:todocrudlist/Screens/home_screens.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,25 +20,12 @@ class MyApp extends StatelessWidget {
 }
 
 class MyMainPage extends StatelessWidget {
-  //List<Map<String, String>> itemList = [];
-
   const MyMainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Todo List'),
-      ),
-      body: const Center(
-        child: Text('there is no item!'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          MyForm().addDialog(context);
-        },
-        child: const Icon(Icons.add),
-      ),
+    return const Scaffold(
+      body: MyHome(),
     );
   }
 }
