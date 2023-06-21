@@ -46,9 +46,54 @@ class _MyHomeState extends State<MyHome> {
                     itemCount: itemList.length,
                     itemBuilder: (BuildContext context, int index) {
                       Items currentItem = itemList[index];
-                      return ListTile(
-                        title: Text(currentItem.title),
-                        subtitle: Text(currentItem.description),
+                      return Card(
+                        color: Colors.lightBlueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          leading: const Icon(
+                            Icons.note_add,
+                            size: 40,
+                          ),
+                          title: Text(currentItem.title),
+                          subtitle: Text(currentItem.description),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.blueAccent,
+                                child: IconButton(
+                                  onPressed: () {
+                                    MyForm(onSave: (updatedItem) {
+                                      setState(() {
+                                        itemList[index] = updatedItem;
+                                        //itemList.removeAt(index);
+                                        // itemList.add(updatedItem);
+                                        print(updatedItem.title);
+                                      });
+                                    }).editDialog(context, currentItem.id);
+                                  },
+                                  color: Colors.white,
+                                  icon: const Icon(Icons.edit),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              CircleAvatar(
+                                backgroundColor: Colors.red,
+                                child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      itemList.removeAt(index);
+                                    });
+                                  },
+                                  color: Colors.white,
+                                  icon: const Icon(Icons.delete),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   ),
