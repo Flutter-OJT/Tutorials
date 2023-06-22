@@ -11,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController desController = TextEditingController();
   List<TodoModel> todomodel = [];
@@ -78,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   AppBar appBar() {
     return AppBar(
-      title: Text('To do List'),
+      title: Text('To do Lis'),
     );
   }
 
@@ -111,34 +112,48 @@ class _HomeScreenState extends State<HomeScreen> {
                     selectedIndex = index;
                   });
                   showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.6,
-                          child: Container(
-                            padding: EdgeInsets.all(16),
-                            color: Colors.white,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.7,
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          color: Colors.white,
+                          child: Form(
+                            key: formKey, 
                             child: Column(
                               children: [
                                 Text('Update To Do'),
                                 SizedBox(
                                   height: 16,
                                 ),
-                                TextField(
+                                TextFormField(
                                   controller: titleController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Title cannot be empty!';
+                                    }
+                                    return null;
+                                  },
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
-                                    hintText: ('Title'),
+                                    hintText: 'Title',
                                   ),
                                 ),
                                 SizedBox(
                                   height: 16,
                                 ),
-                                TextField(
+                                TextFormField(
                                   controller: desController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Description cannot be empty!';
+                                    }
+                                    return null;
+                                  },
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
-                                    hintText: ('Description'),
+                                    hintText: 'Description',
                                   ),
                                 ),
                                 SizedBox(
@@ -146,20 +161,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    String title = titleController.text.trim();
-                                    String description =
-                                        desController.text.trim();
-                                    if (title.isNotEmpty &&
-                                        description.isNotEmpty) {
-                                      setState(() {
-                                        titleController.text = '';
-                                        desController.text = '';
-                                        todomodel[selectedIndex].title = title;
-                                        todomodel[selectedIndex].description =
-                                            description;
-                                        // selectedIndex = -1;
-                                      });
-                                      Navigator.pop(context);
+                                    if (formKey.currentState!.validate()) {
+                                      // Validate the form fields
+                                      String title = titleController.text.trim();
+                                      String description = desController.text.trim();
+                                      if (title.isNotEmpty && description.isNotEmpty) {
+                                        setState(() {
+                                          titleController.text = '';
+                                          desController.text = '';
+                                          todomodel[selectedIndex].title = title;
+                                          todomodel[selectedIndex].description = description;
+                                          // selectedIndex = -1;
+                                        });
+                                        Navigator.pop(context);
+                                      }
                                     }
                                   },
                                   child: Text('Update'),
@@ -167,8 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                           ),
-                        );
-                      });
+                        ),
+                      );
+                    },
+                  );
+
                 },
                 icon: Icon(Icons.edit),
                 iconSize: 20,

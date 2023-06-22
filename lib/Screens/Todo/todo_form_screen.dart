@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TodoFormScreen extends StatelessWidget {
-  final formKey = GlobalKey<FormState>();
+class TodoFormScreen extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController desController;
   final Function(String, String) onCreate;
@@ -13,50 +12,72 @@ class TodoFormScreen extends StatelessWidget {
   });
 
   @override
+  State<TodoFormScreen> createState() => _TodoFormScreenState();
+}
+
+class _TodoFormScreenState extends State<TodoFormScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
-      heightFactor: 0.6,
+      heightFactor: 0.7,
       child: Container(
         padding: EdgeInsets.all(16),
         color: Colors.white,
-        child: Column(
-          children: [
-            Text('Create To Do'),
-            SizedBox(
-              height: 16,
-            ),
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: ('Title'),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Text('Create To Do'),
+              SizedBox(
+                height: 16,
               ),
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            TextField(
-              controller: desController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: ('Description'),
+              TextFormField(
+                controller: widget.titleController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a title';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Title',
+                ),
               ),
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String title = titleController.text.trim();
-                String description = desController.text.trim();
-                if (title.isNotEmpty && description.isNotEmpty) {
-                  onCreate(title, description);
-                  Navigator.pop(context);
-                }
-              },
-              child: Text('Create'),
-            ),
-          ],
+              SizedBox(
+                height: 16,
+              ),
+              TextFormField(
+                controller: widget.desController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Description',
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    String title = widget.titleController.text.trim();
+                    String description = widget.desController.text.trim();
+                    widget.onCreate(title, description);
+                    Navigator.pop(context);
+                  }
+                },
+                child: Text('Create'),
+              ),
+            ],
+          ),
         ),
       ),
     );
