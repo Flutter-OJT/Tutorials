@@ -65,14 +65,21 @@ class _MyHomeState extends State<MyHome> {
                                 backgroundColor: Colors.blueAccent,
                                 child: IconButton(
                                   onPressed: () {
-                                    MyForm(onSave: (updatedItem) {
-                                      setState(() {
-                                        itemList[index] = updatedItem;
-                                        //itemList.removeAt(index);
-                                        // itemList.add(updatedItem);
-                                        print(updatedItem.title);
-                                      });
-                                    }).editDialog(context, currentItem.id);
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return MyForm(
+                                          onSave: (items) {
+                                            setState(() {
+                                              itemList[index] = items;
+                                            });
+                                          },
+                                          initialTitle: currentItem.title,
+                                          initialDescription:
+                                              currentItem.description,
+                                        );
+                                      },
+                                    );
                                   },
                                   color: Colors.white,
                                   icon: const Icon(Icons.edit),
@@ -83,9 +90,33 @@ class _MyHomeState extends State<MyHome> {
                                 backgroundColor: Colors.red,
                                 child: IconButton(
                                   onPressed: () {
-                                    setState(() {
-                                      itemList.removeAt(index);
-                                    });
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Delete Item'),
+                                          content: const Text(
+                                              'Are you sure you want to delete this item?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  itemList.removeAt(index);
+                                                });
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                   color: Colors.white,
                                   icon: const Icon(Icons.delete),
@@ -102,11 +133,20 @@ class _MyHomeState extends State<MyHome> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          MyForm(onSave: (items) {
-            setState(() {
-              itemList.add(items);
-            });
-          }).addDialog(context);
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return MyForm(
+                onSave: (items) {
+                  setState(() {
+                    itemList.add(items);
+                  });
+                },
+                initialDescription: '',
+                initialTitle: '',
+              );
+            },
+          );
         },
         child: const Icon(Icons.add),
       ),

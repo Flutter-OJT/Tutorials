@@ -1,6 +1,6 @@
 # todocrudlist
 
-A new Flutter project.
+A new Flutter CRUD project.
 
 ## Getting Started
 
