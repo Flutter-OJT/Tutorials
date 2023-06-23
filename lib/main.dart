@@ -18,9 +18,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
+
 
 
