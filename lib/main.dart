@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:todocrudlist/Models/item.dart';
+//import 'package:sqflite/sqflite.dart';
+import 'package:todocrudlist/Services/entity_service.dart';
 import 'package:todocrudlist/Screens/home_screens.dart';
-import 'package:todocrudlist/services/item_service.dart';
-import 'dart:io';
 
-import 'Models/config/entity_manager.dart';
-
-/// The current project path
-final projectPath = Directory.current.path;
-
-/// the entiry manager
-final entityManager = EntityManager();
-
-/// the user service
-final itemsService = ItemService();
+/// The entity service
+final entityService = EntityService();
 
 void main() async {
-  await entityManager.initDatabase([Item.empty()]);
+  WidgetsFlutterBinding.ensureInitialized();
+  await entityService.initialize(); // Initialize the database
+
+  // Access the database instance from the entityService
+  // ignore: unused_local_variable
+  //Database database = entityService.database;
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyMainPage(),
-    );
-  }
-}
-
-class MyMainPage extends StatelessWidget {
-  const MyMainPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: MyHome(),
+      home: const MyHome(),
     );
   }
 }

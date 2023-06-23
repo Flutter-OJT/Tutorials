@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:todocrudlist/main.dart';
-import '../../Models/Todo/todo_model.dart';
-import '../../services/item_service.dart';
+import 'package:todocrudlist/Models/Example/item_model.dart';
+
 import '../Commons/common_widgets.dart';
 
-// ignore: must_be_immutable
 class MyForm extends StatelessWidget {
-  //final Function(Item) onSave;
+  final Function(ItemModel) onSave;
   final String initialTitle;
   final String initialDescription;
-  final ItemService _itemService = ItemService();
+
   MyForm({
     Key? key,
     required this.initialTitle,
     required this.initialDescription,
+    required this.onSave,
   }) : super(key: key);
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -90,13 +89,14 @@ class MyForm extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          String title = _titleController.text;
-                          String description = _descriptionController.text;
-                          Item newItem = Item(
-                            title: title,
-                            description: description,
+                          final newItem = ItemModel(
+                            // Set the id as per your requirement
+                            title: _titleController.text,
+                            description: _descriptionController.text,
                           );
-                          await _itemService.createItem(newItem);
+
+                          await onSave(newItem);
+                          // ignore: use_build_context_synchronously
                           Navigator.pop(context);
                         }
                       },
