@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:todocrudlist/main.dart';
 import '../../Models/Todo/todo_model.dart';
+import '../../services/item_service.dart';
+import '../Commons/common_widgets.dart';
 
 // ignore: must_be_immutable
 class MyForm extends StatelessWidget {
-  final Function(Items) onSave;
+  //final Function(Item) onSave;
   final String initialTitle;
   final String initialDescription;
-
+  final ItemService _itemService = ItemService();
   MyForm({
     Key? key,
-    required this.onSave,
     required this.initialTitle,
     required this.initialDescription,
   }) : super(key: key);
@@ -44,10 +46,7 @@ class MyForm extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     isEditing ? 'Todo Edit' : 'Todo Create',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: CommonWidget.titleText(),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -89,28 +88,24 @@ class MyForm extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          int i = 99;
                           String title = _titleController.text;
                           String description = _descriptionController.text;
-                          Items items = Items(
-                            description: description,
+                          Item newItem = Item(
                             title: title,
-                            id: i,
+                            description: description,
                           );
-                          onSave(items);
-                          i++;
+                          await _itemService.createItem(newItem);
                           Navigator.pop(context);
                         }
                       },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 20.0,
-                          horizontal: 20.0,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      style: CommonWidget.primaryButtonStyle().copyWith(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
                       child: Text(isEditing ? 'Update' : 'Create'),

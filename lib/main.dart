@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:todocrudlist/Models/item.dart';
 import 'package:todocrudlist/Screens/home_screens.dart';
+import 'package:todocrudlist/services/item_service.dart';
+import 'dart:io';
 
-void main() {
+import 'Models/config/entity_manager.dart';
+
+/// The current project path
+final projectPath = Directory.current.path;
+
+/// the entiry manager
+final entityManager = EntityManager();
+
+/// the user service
+final itemsService = ItemService();
+
+void main() async {
+  await entityManager.initDatabase([Item.empty()]);
   runApp(const MyApp());
 }
 

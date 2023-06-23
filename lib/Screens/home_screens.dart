@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todocrudlist/Models/Todo/todo_model.dart';
+import 'Commons/common_widgets.dart';
 import 'Todo/todo_form_screen.dart';
 
 class MyHome extends StatefulWidget {
@@ -10,7 +11,7 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
-  List<Items> itemList = []; // Declare itemList in the state class
+  List<Item> itemList = []; // Declare itemList in the state class
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class _MyHomeState extends State<MyHome> {
                   child: ListView.builder(
                     itemCount: itemList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      Items currentItem = itemList[index];
+                      Item currentItem = itemList[index];
                       return Card(
                         color: Colors.lightBlueAccent,
                         shape: RoundedRectangleBorder(
@@ -63,7 +64,7 @@ class _MyHomeState extends State<MyHome> {
                             children: [
                               CircleAvatar(
                                 backgroundColor: Colors.blueAccent,
-                                child: IconButton(
+                                child: CommonWidget.commonIconButton(
                                   onPressed: () {
                                     showModalBottomSheet(
                                       context: context,
@@ -74,21 +75,19 @@ class _MyHomeState extends State<MyHome> {
                                               itemList[index] = items;
                                             });
                                           },
-                                          initialTitle: currentItem.title,
-                                          initialDescription:
-                                              currentItem.description,
+                                          //initialTitle: currentItem.title,
+                                          // initialDescription:currentItem.description,
                                         );
                                       },
                                     );
                                   },
-                                  color: Colors.white,
-                                  icon: const Icon(Icons.edit),
+                                  icon: Icons.edit,
                                 ),
                               ),
                               const SizedBox(width: 10),
                               CircleAvatar(
                                 backgroundColor: Colors.red,
-                                child: IconButton(
+                                child: CommonWidget.commonIconButton(
                                   onPressed: () {
                                     showDialog(
                                       context: context,
@@ -118,8 +117,7 @@ class _MyHomeState extends State<MyHome> {
                                       },
                                     );
                                   },
-                                  color: Colors.white,
-                                  icon: const Icon(Icons.delete),
+                                  icon: Icons.delete,
                                 ),
                               ),
                             ],
