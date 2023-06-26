@@ -3,7 +3,7 @@ import 'package:todocrudlist/Models/Example/item_model.dart';
 
 import '../Commons/common_widgets.dart';
 
-class MyForm extends StatelessWidget {
+class MyForm extends StatefulWidget {
   final Function(ItemModel) onSave;
   final String initialTitle;
   final String initialDescription;
@@ -15,19 +15,28 @@ class MyForm extends StatelessWidget {
     required this.onSave,
   }) : super(key: key);
 
-  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  _MyFormState createState() => _MyFormState();
+}
 
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+class _MyFormState extends State<MyForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.initialTitle);
+    _descriptionController =
+        TextEditingController(text: widget.initialDescription);
+  }
 
   @override
   Widget build(BuildContext context) {
-    bool isEditing = initialTitle.isNotEmpty && initialDescription.isNotEmpty;
-
-    if (isEditing) {
-      _titleController.text = initialTitle;
-      _descriptionController.text = initialDescription;
-    }
+    bool isEditing =
+        widget.initialTitle.isNotEmpty && widget.initialDescription.isNotEmpty;
 
     return SingleChildScrollView(
       child: Container(
@@ -90,13 +99,11 @@ class MyForm extends StatelessWidget {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           final newItem = ItemModel(
-                            // Set the id as per your requirement
                             title: _titleController.text,
                             description: _descriptionController.text,
                           );
 
-                          await onSave(newItem);
-                          // ignore: use_build_context_synchronously
+                          await widget.onSave(newItem);
                           Navigator.pop(context);
                         }
                       },
